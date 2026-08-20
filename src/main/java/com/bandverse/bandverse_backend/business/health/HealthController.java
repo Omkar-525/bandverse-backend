@@ -1,4 +1,4 @@
-package com.bandverse.bandverse_backend.health;
+package com.bandverse.bandverse_backend.business.health;
 
 
 import org.springframework.web.bind.annotation.GetMapping;

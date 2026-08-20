@@ -1,4 +1,4 @@
-name: Bandverse Backend CI
+name: BandVerse Backend CI
 
 on:
   push:
