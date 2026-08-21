@@ -30,12 +30,12 @@ jobs:
           --health-timeout=5s
           --health-retries=5
 
-      env:
-        DB_HOST: localhost
-        DB_PORT: 5433
-        DB_NAME: bandverse
-        DB_USERNAME: bandverse_app
-        DB_PASSWORD: bandverse_test
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5433
+      DB_NAME: bandverse
+      DB_USERNAME: bandverse_app
+      DB_PASSWORD: bandverse_test
 
     steps:
       - name: Checkout App
@@ -48,7 +48,7 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Executing maven
+      - name: Make Maven Wrapper executable
         run: chmod +x mvnw
 
       - name: Run tests
