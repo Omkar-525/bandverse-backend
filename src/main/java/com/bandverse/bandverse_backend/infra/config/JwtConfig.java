@@ -3,16 +3,17 @@ package com.bandverse.bandverse_backend.infra.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -24,10 +25,10 @@ import java.util.Base64;
 public class JwtConfig {
 
     @Value("${jwt.private-key-path}")
-    private String privateKeyPath;
+    private Resource privateKeyResource;
 
     @Value("${jwt.public-key-path}")
-    private String publicKeyPath;
+    private Resource publicKeyResource;
 
     @Value("${jwt.issuer}")
     private String issuer;
@@ -37,9 +38,7 @@ public class JwtConfig {
 
         try {
 
-            String key = Files.readString(
-                            Path.of(privateKeyPath)
-                    )
+            String key = readKey(privateKeyResource)
                     .replace("-----BEGIN PRIVATE KEY-----", "")
                     .replace("-----END PRIVATE KEY-----", "")
                     .replaceAll("\\s", "");
@@ -68,9 +67,7 @@ public class JwtConfig {
 
         try {
 
-            String key = Files.readString(
-                            Path.of(publicKeyPath)
-                    )
+            String key = readKey(publicKeyResource)
                     .replace("-----BEGIN PUBLIC KEY-----", "")
                     .replace("-----END PUBLIC KEY-----", "")
                     .replaceAll("\\s", "");
@@ -128,5 +125,12 @@ public class JwtConfig {
         return decoder;
     }
 
+    private String readKey(Resource resource)
+            throws IOException {
 
+        return new String(
+                resource.getInputStream().readAllBytes(),
+                StandardCharsets.UTF_8
+        );
+    }
 }
