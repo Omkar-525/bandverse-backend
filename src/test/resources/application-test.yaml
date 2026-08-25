@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/bandverse
+    username: bandverse_app
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    enabled: true
+
+jwt:
+  issuer: bandverse-test
+  access-token-expiration: 900
+  private-key-path: classpath:test-jwt-private.pem
+  public-key-path: classpath:test-jwt-public.pem

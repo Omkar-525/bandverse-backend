@@ -72,3 +72,5 @@ Thumbs.db
 
 ### VS Code ###
 .vscode/
+
+src/test/resources/test-jwt-private.pem
