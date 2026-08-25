@@ -71,6 +71,8 @@ class UserControllerTest {
 
         request.setEmail("controller@bandverse.test");
         request.setPhone("9999999999");
+        request.setDisplayName("Controller Test User");
+        request.setPassword("TestPassword123!");
         request.setRegistrationType(RegistrationType.USER);
 
         mockMvc.perform(
@@ -113,6 +115,8 @@ class UserControllerTest {
 
         request.setEmail("existing@bandverse.test");
         request.setPhone("9999999999");
+        request.setDisplayName("Existing Test User");
+        request.setPassword("TestPassword123!");
         request.setRegistrationType(RegistrationType.USER);
 
         mockMvc.perform(

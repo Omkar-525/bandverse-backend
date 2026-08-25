@@ -14,6 +14,7 @@ import com.bandverse.bandverse_backend.business.user.repository.UserRepository;
 import com.bandverse.bandverse_backend.util.response_builders.success.SuccessResponseBuilder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserServiceImpl implements UserService {
 
     private final SuccessResponseBuilder successResponseBuilder;
+    private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
     private final ArtistRepository artistRepository;
@@ -49,8 +51,11 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = new User();
+
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
+        user.setDisplayName(request.getDisplayName());
+        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setRegistrationType(request.getRegistrationType());
         user.setAccountStatus(AccountStatus.ACTIVE);
 
@@ -101,7 +106,7 @@ public class UserServiceImpl implements UserService {
 
                 Artist artist = new Artist();
                 artist.setUser(user);
-                artist.setDisplayName(user.getEmail());
+                artist.setDisplayName(user.getDisplayName());
 
                 artistRepository.save(artist);
 

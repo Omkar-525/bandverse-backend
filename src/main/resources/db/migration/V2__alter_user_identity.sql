@@ -1,0 +1,8 @@
+ALTER TABLE users
+    ADD COLUMN password_hash VARCHAR(255),
+    ADD COLUMN display_name VARCHAR(255),
+    ADD COLUMN avatar_url VARCHAR(500),
+    ADD COLUMN email_verified_at TIMESTAMP WITH TIME ZONE,
+    ADD COLUMN phone_verified_at TIMESTAMP WITH TIME ZONE,
+    ADD COLUMN mfa_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+    ADD COLUMN deleted_at TIMESTAMP WITH TIME ZONE;

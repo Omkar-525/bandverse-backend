@@ -22,8 +22,16 @@ public class RegisterUserRequest extends BaseRequest {
     @Email
     private String email;
 
+    @NotBlank
+    private String password;
+
     private String phone;
 
     @NotNull
     private RegistrationType registrationType;
+
+    @NotBlank
+    private String displayName;
+
+
 }

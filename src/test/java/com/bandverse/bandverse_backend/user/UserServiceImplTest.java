@@ -5,17 +5,18 @@ import com.bandverse.bandverse_backend.business.band.repository.BandRepository;
 import com.bandverse.bandverse_backend.business.user.dto.RegisterUserRequest;
 import com.bandverse.bandverse_backend.business.user.dto.RegisterUserResponse;
 import com.bandverse.bandverse_backend.business.user.entity.User;
-import com.bandverse.bandverse_backend.util.enums.AccountStatus;
-import com.bandverse.bandverse_backend.util.enums.RegistrationType;
 import com.bandverse.bandverse_backend.business.user.repository.UserRepository;
 import com.bandverse.bandverse_backend.business.user.service.UserServiceImpl;
 import com.bandverse.bandverse_backend.infra.exception.UserAlreadyExistsException;
+import com.bandverse.bandverse_backend.util.enums.AccountStatus;
+import com.bandverse.bandverse_backend.util.enums.RegistrationType;
 import com.bandverse.bandverse_backend.util.response_builders.success.SuccessResponseBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
 
@@ -42,6 +43,9 @@ class UserServiceImplTest {
     @Mock
     private SuccessResponseBuilder successResponseBuilder;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -52,7 +56,11 @@ class UserServiceImplTest {
 
         request.setEmail("user@bandverse.test");
         request.setPhone("9999999999");
+        request.setDisplayName("Test User");
+        request.setPassword("TestPassword123!");
         request.setRegistrationType(RegistrationType.USER);
+
+        String hashedPassword = "hashed-password";
 
         User savedUser = new User();
 
@@ -61,12 +69,10 @@ class UserServiceImplTest {
         savedUser.setId(userId);
         savedUser.setEmail(request.getEmail());
         savedUser.setPhone(request.getPhone());
-        savedUser.setRegistrationType(
-                RegistrationType.USER
-        );
-        savedUser.setAccountStatus(
-                AccountStatus.ACTIVE
-        );
+        savedUser.setDisplayName(request.getDisplayName());
+        savedUser.setPasswordHash(hashedPassword);
+        savedUser.setRegistrationType(RegistrationType.USER);
+        savedUser.setAccountStatus(AccountStatus.ACTIVE);
 
         RegisterUserResponse expectedResponse =
                 RegisterUserResponse.builder()
@@ -77,6 +83,9 @@ class UserServiceImplTest {
 
         when(userRepository.existsByEmail(request.getEmail()))
                 .thenReturn(false);
+
+        when(passwordEncoder.encode(request.getPassword()))
+                .thenReturn(hashedPassword);
 
         when(userRepository.save(any(User.class)))
                 .thenReturn(savedUser);
@@ -93,20 +102,27 @@ class UserServiceImplTest {
                 userService.register(request);
 
         assertNotNull(actualResponse);
+
         assertEquals(
                 userId,
                 actualResponse.getUserId()
         );
+
         assertEquals(
                 RegistrationType.USER,
                 actualResponse.getRegistrationType()
         );
+
         assertEquals(
                 AccountStatus.ACTIVE,
                 actualResponse.getAccountStatus()
         );
 
-        verify(userRepository).save(any(User.class));
+        verify(passwordEncoder)
+                .encode(request.getPassword());
+
+        verify(userRepository)
+                .save(any(User.class));
 
         verify(artistRepository, never())
                 .save(any());
@@ -122,18 +138,21 @@ class UserServiceImplTest {
 
         request.setEmail("artist@bandverse.test");
         request.setPhone("9999999999");
+        request.setDisplayName("Test Artist");
+        request.setPassword("TestPassword123!");
         request.setRegistrationType(RegistrationType.ARTIST);
+
+        String hashedPassword = "hashed-artist-password";
 
         User savedUser = new User();
 
         savedUser.setId(UUID.randomUUID());
         savedUser.setEmail(request.getEmail());
-        savedUser.setRegistrationType(
-                RegistrationType.ARTIST
-        );
-        savedUser.setAccountStatus(
-                AccountStatus.ACTIVE
-        );
+        savedUser.setPhone(request.getPhone());
+        savedUser.setDisplayName(request.getDisplayName());
+        savedUser.setPasswordHash(hashedPassword);
+        savedUser.setRegistrationType(RegistrationType.ARTIST);
+        savedUser.setAccountStatus(AccountStatus.ACTIVE);
 
         RegisterUserResponse expectedResponse =
                 RegisterUserResponse.builder()
@@ -144,6 +163,9 @@ class UserServiceImplTest {
 
         when(userRepository.existsByEmail(request.getEmail()))
                 .thenReturn(false);
+
+        when(passwordEncoder.encode(request.getPassword()))
+                .thenReturn(hashedPassword);
 
         when(userRepository.save(any(User.class)))
                 .thenReturn(savedUser);
@@ -161,8 +183,14 @@ class UserServiceImplTest {
 
         assertNotNull(response);
 
-        verify(artistRepository).save(any());
-        verify(bandRepository, never()).save(any());
+        verify(passwordEncoder)
+                .encode(request.getPassword());
+
+        verify(artistRepository)
+                .save(any());
+
+        verify(bandRepository, never())
+                .save(any());
     }
 
     @Test
@@ -172,18 +200,21 @@ class UserServiceImplTest {
 
         request.setEmail("band@bandverse.test");
         request.setPhone("9999999999");
+        request.setDisplayName("Test Band");
+        request.setPassword("TestPassword123!");
         request.setRegistrationType(RegistrationType.BAND);
+
+        String hashedPassword = "hashed-band-password";
 
         User savedUser = new User();
 
         savedUser.setId(UUID.randomUUID());
         savedUser.setEmail(request.getEmail());
-        savedUser.setRegistrationType(
-                RegistrationType.BAND
-        );
-        savedUser.setAccountStatus(
-                AccountStatus.ACTIVE
-        );
+        savedUser.setPhone(request.getPhone());
+        savedUser.setDisplayName(request.getDisplayName());
+        savedUser.setPasswordHash(hashedPassword);
+        savedUser.setRegistrationType(RegistrationType.BAND);
+        savedUser.setAccountStatus(AccountStatus.ACTIVE);
 
         RegisterUserResponse expectedResponse =
                 RegisterUserResponse.builder()
@@ -194,6 +225,9 @@ class UserServiceImplTest {
 
         when(userRepository.existsByEmail(request.getEmail()))
                 .thenReturn(false);
+
+        when(passwordEncoder.encode(request.getPassword()))
+                .thenReturn(hashedPassword);
 
         when(userRepository.save(any(User.class)))
                 .thenReturn(savedUser);
@@ -211,8 +245,14 @@ class UserServiceImplTest {
 
         assertNotNull(response);
 
-        verify(bandRepository).save(any());
-        verify(artistRepository, never()).save(any());
+        verify(passwordEncoder)
+                .encode(request.getPassword());
+
+        verify(bandRepository)
+                .save(any());
+
+        verify(artistRepository, never())
+                .save(any());
     }
 
     @Test
@@ -222,6 +262,8 @@ class UserServiceImplTest {
 
         request.setEmail("duplicate@bandverse.test");
         request.setPhone("9999999999");
+        request.setDisplayName("Duplicate User");
+        request.setPassword("TestPassword123!");
         request.setRegistrationType(RegistrationType.USER);
 
         when(userRepository.existsByEmail(request.getEmail()))
@@ -234,6 +276,9 @@ class UserServiceImplTest {
 
         verify(userRepository, never())
                 .save(any(User.class));
+
+        verify(passwordEncoder, never())
+                .encode(any());
 
         verify(artistRepository, never())
                 .save(any());
