@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.security.authentication.BadCredentialsException;
+import com.bandverse.bandverse_backend.infra.model.BaseResponse;
 
 import java.util.stream.Collectors;
 
@@ -67,6 +69,27 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(response.getHttpStatus())
+                .body(response);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<BaseResponse> handleBadCredentials(
+            BadCredentialsException exception
+    ) {
+
+        log.warn("User authentication failed. reason=invalid_credentials");
+
+        BaseResponse response = new BaseResponse();
+
+        response.setHttpStatus(HttpStatus.UNAUTHORIZED);
+        response.setStatus("Failure");
+        response.setResponseCode("INVALID_CREDENTIALS");
+        response.setResponseDescription(
+                "Invalid email or password"
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(response);
     }
 }

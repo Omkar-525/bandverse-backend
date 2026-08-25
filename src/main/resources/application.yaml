@@ -43,3 +43,9 @@ logging:
   level:
     root: INFO
     com.bandverse: DEBUG
+
+jwt:
+  issuer: ${JWT_ISSUER:bandverse-backend}
+  access-token-expiration: ${JWT_ACCESS_TOKEN_EXPIRATION:900}
+  private-key-path: ${JWT_PRIVATE_KEY_PATH:./secrets/jwt-private.pem}
+  public-key-path: ${JWT_PUBLIC_KEY_PATH:./secrets/jwt-public.pem}

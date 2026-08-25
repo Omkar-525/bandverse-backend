@@ -68,5 +68,7 @@ build/
 
 Thumbs.db
 
+/secrets/
+
 ### VS Code ###
 .vscode/

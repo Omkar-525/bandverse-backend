@@ -1,5 +1,6 @@
 package com.bandverse.bandverse_backend.util.response_builders.success;
 
+import com.bandverse.bandverse_backend.business.auth.dto.LoginResponse;
 import com.bandverse.bandverse_backend.business.user.dto.RegisterUserResponse;
 import com.bandverse.bandverse_backend.infra.model.BaseResponse;
 import com.bandverse.bandverse_backend.util.enums.AccountStatus;
@@ -36,6 +37,25 @@ public class SuccessResponseBuilder {
                 .userId(userId)
                 .registrationType(registrationType)
                 .accountStatus(accountStatus)
+                .build();
+    }
+
+    public LoginResponse loginSuccess(String accessToken) {
+
+        BaseResponse baseResponse =
+                baseSuccess.baseSuccessResponse(
+                        "Login successful"
+                );
+
+        return LoginResponse.builder()
+                .httpStatus(baseResponse.getHttpStatus())
+                .status(baseResponse.getStatus())
+                .responseCode(baseResponse.getResponseCode())
+                .responseDescription(
+                        baseResponse.getResponseDescription()
+                )
+                .accessToken(accessToken)
+                .tokenType("Bearer")
                 .build();
     }
 }
