@@ -21,25 +21,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(
-            @Valid @RequestBody LoginRequest request
-    ) {
-
-        LoginResponse response =
-                authService.login(request);
-
-        return ResponseEntity
-                .status(response.getHttpStatus())
-                .body(response);
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        LoginResponse response = authService.login(request);
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
     @GetMapping("/me")
-    public ResponseEntity<String> me(
-            Authentication authentication
-    ) {
-
-        return ResponseEntity.ok(
-                authentication.getName()
-        );
+    public ResponseEntity<String> me(Authentication authentication) {
+        return ResponseEntity.ok(authentication.getName());
     }
 }
